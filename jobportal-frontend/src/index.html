@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Available Jobs</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      gap: 10px;
+    }
+    .search-bar input {
+      width: 300px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .search-bar button {
+      padding: 10px 16px;
+      border: none;
+      background: #4a90e2;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .job-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .job-card:hover {
+      transform: translateY(-5px);
+    }
+    .job-card h3 {
+      margin: 0 0 0.5rem;
+      color: #333;
+    }
+    .job-card p {
+      margin: 0.3rem 0;
+      color: #555;
+    }
+    .apply-btn {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 10px 14px;
+      background: #4a90e2;
+      color: white;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .apply-btn:hover {
+      background: #357abd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Available Jobs</h1>
+  </header>
+
+  <div class="container">
+    <!-- 🔍 Search Bar -->
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="Search by title or company..." />
+      <button onclick="filterJobs()">Search</button>
+    </div>
+
+    <!-- Jobs Grid -->
+    <div id="jobs" class="jobs-grid"></div>
+  </div>
+
+  <script>
+    let allJobs = [];
+
+    // Fetch jobs from backend (Spring Boot API)
+    async function loadJobs() {
+      try {
+        const res = await fetch("http://localhost:8080/jobs");
+        allJobs = await res.json();
+        displayJobs(allJobs);
+      } catch (err) {
+        console.error("Error fetching jobs:", err);
+      }
+    }
+
+    // Display jobs in cards
+    function displayJobs(jobs) {
+      const jobsContainer = document.getElementById("jobs");
+      jobsContainer.innerHTML = "";
+
+      if (jobs.length === 0) {
+        jobsContainer.innerHTML = "<p>No jobs found.</p>";
+        return;
+      }
+
+      jobs.forEach(job => {
+        const card = document.createElement("div");
+        card.className = "job-card";
+        card.innerHTML = `
+          <h3>${job.title}</h3>
+          <p><strong>Company:</strong> ${job.company}</p>
+          <p><strong>Location:</strong> ${job.location}</p>
+          <p><strong>Salary:</strong> ${job.salary || "Not disclosed"}</p>
+          <p>${job.description}</p>
+          <a class="apply-btn" href="apply.html?jobId=${job.id}">Apply</a>
+        `;
+        jobsContainer.appendChild(card);
+      });
+    }
+
+    // Filter jobs by search
+    function filterJobs() {
+      const query = document.getElementById("search").value.toLowerCase();
+      const filtered = allJobs.filter(
+        job =>
+          job.title.toLowerCase().includes(query) ||
+          job.company.toLowerCase().includes(query)
+      );
+      displayJobs(filtered);
+    }
+
+    // Load jobs on page load
+    loadJobs();
+  </script>
+</body>
+</html>

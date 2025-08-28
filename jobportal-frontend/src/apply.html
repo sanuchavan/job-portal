@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply for Job</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #4a90e2;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 500;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      margin-top: 1.5rem;
+      padding: 12px;
+      width: 100%;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #357abd;
+    }
+    .success {
+      color: green;
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .error {
+      color: red;
+      font-weight: bold;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Apply for Job</h1>
+  </header>
+
+  <div class="container">
+    <h2 id="jobTitle">Loading job...</h2>
+    <form id="applyForm">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="resume">Resume (Paste or Link)</label>
+      <textarea id="resume" name="resume" rows="4" required></textarea>
+
+      <label for="coverLetter">Cover Letter</label>
+      <textarea id="coverLetter" name="coverLetter" rows="4"></textarea>
+
+      <button type="submit">Submit Application</button>
+    </form>
+    <div id="message"></div>
+  </div>
+
+  <script>
+    const jobId = new URLSearchParams(window.location.search).get("jobId");
+
+    // Load job title from backend
+    async function loadJobDetails() {
+      try {
+        const res = await fetch(`http://localhost:8080/jobs/${jobId}`);
+        const job = await res.json();
+        document.getElementById("jobTitle").textContent =
+          "Applying for: " + job.title;
+      } catch (err) {
+        console.error("Error fetching job details:", err);
+      }
+    }
+
+    loadJobDetails();
+
+    // Handle form submit
+    document.getElementById("applyForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const application = {
+        jobId: jobId,
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        resume: document.getElementById("resume").value,
+        coverLetter: document.getElementById("coverLetter").value,
+      };
+
+      try {
+        const res = await fetch("http://localhost:8080/applications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(application),
+        });
+
+        if (res.ok) {
+          document.getElementById("message").innerHTML =
+            "<p class='success'>✅ Application submitted successfully!</p>";
+          document.getElementById("applyForm").reset();
+        } else {
+          document.getElementById("message").innerHTML =
+            "<p class='error'>❌ Failed to submit application. Try again.</p>";
+        }
+      } catch (err) {
+        console.error("Error submitting application:", err);
+        document.getElementById("message").innerHTML =
+          "<p class='error'>⚠️ Error connecting to server.</p>";
+      }
+    });
+  </script>
+</body>
+</html>

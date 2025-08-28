@@ -1,0 +1,41 @@
+import React, { useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+
+function ApplyJob() {
+  const { jobId } = useParams();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [coverLetter, setCoverLetter] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      alert("Please login first");
+      return;
+    }
+    const application = {
+      job: { id: jobId },
+      user: { id: user.id },
+      coverLetter
+    };
+    await axios.post("http://localhost:8080/api/applications", application);
+    alert("Application Submitted!");
+  };
+
+  return (
+    <div>
+      <h2>Apply for Job</h2>
+      <form onSubmit={handleSubmit}>
+        <textarea 
+          placeholder="Cover Letter" 
+          value={coverLetter}
+          onChange={(e) => setCoverLetter(e.target.value)} 
+        />
+        <br/>
+        <button type="submit">Submit Application</button>
+      </form>
+    </div>
+  );
+}
+
+export default ApplyJob;
