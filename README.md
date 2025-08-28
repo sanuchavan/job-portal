@@ -1,22 +1,15 @@
 
-📌 Features-
-User Side
-Browse available jobs
-Apply for jobs with details
-View application status
-Admin Side
-Add new job postings
-Edit or delete jobs
-Manage applicants
+Features – Job Portal
 
-🏗Tech Stack-
-Backend (REST API)
-Java 17 / 11
-Spring Boot (Web, JPA, Hibernate, Validation)
-MySQL (Database)
-Lombok (Boilerplate reduction)
+👨‍💼 Job Seekers: Register/Login, browse & search jobs, apply for jobs, track applications, manage profile.
 
-Frontend-
+🏢 Employers: Post/manage jobs, view applications, shortlist/reject candidates.
+
+🛠️ Admin (optional): Manage users, employers, and job listings.
+
+💻 Tech Stack: Spring Boot (backend), React.js (frontend), MySQL (database), REST APIs, GitHub for version control.
+
+
 
 React.js
 React Router (for navigation)
