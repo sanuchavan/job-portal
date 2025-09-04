@@ -7,14 +7,8 @@ Features – Job Portal
 
 🛠️ Admin (optional): Manage users, employers, and job listings.
 
-💻 Tech Stack: Spring Boot (backend), React.js (frontend), MySQL (database), REST APIs, GitHub for version control.
+💻 Tech Stack: Spring Boot (backend), React.js (frontend), MySQL (database), REST APIs, GitHub for version control.                                                                                                                                                           
 
-
-
-React.js
-React Router (for navigation)
-Axios (for API calls)
-Bootstrap / Tailwind (for UI design)# Job Portal
 
 ## Backend (Spring Boot)
 - Located in `jobportal-backend/`
